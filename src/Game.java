@@ -5,12 +5,11 @@ public class Game {
     public static void main(String[] args)
     {
         int rowAndCol;
-        String winner = "";
-        int blockAmount;
+        boolean gameGoesOn=true;
+        // String winner = "";
 
         //Create a game board
         rowAndCol = rowAmount();
-        blockAmount = rowAndCol*rowAndCol;
         Board board = new Board(rowAndCol);
 
         //Create players
@@ -43,20 +42,35 @@ public class Game {
         configurePlayer(player1);
         configurePlayer(player2);
 
-        while(winner.equals(""))
+        board.newBoard();
+        board.printBoard();
+
+        while(gameGoesOn)
+        {
+            gameGoesOn=play(player1, player2, board);
+            if (gameGoesOn)
+                gameGoesOn=play(player2, player1, board);
+        }
+
+        /*
+        *
+         * while(winner.equals(""))
         {
             //Print new game board
             board.newBoard();
             board.printBoard();
-            while(blockAmount!=0)
+            while(board.getBlockAmount()!=0)
             {
+                play(player1, player2, board);
+                play(player2, player1, board);
                 /*
-                *  System.out.println("BlockAmount is "+blockAmount);
+                // player 1
                 winner = board.playerMove(player1);
                 System.out.println("Winner at player1' round is "+winner);
                 board.printBoard();
                 if (winner.equals(player1.getName()))
                 {
+
                     gameResult(player1, player2, winner, blockAmount);
                 break;
                 }
@@ -67,6 +81,7 @@ public class Game {
                     break;
                 }
 
+                //player 2
                 winner = board.playerMove(player2);
                 System.out.println("Winner at player2' round is "+winner);
                 board.printBoard();
@@ -81,46 +96,105 @@ public class Game {
                     gameResult(player1, player2, winner, blockAmount);
                     break;
                 }
-                */
-                checkPlayer(player1,player2,winner,blockAmount,board,rowAndCol);
-                checkPlayer(player2,player1,winner,blockAmount,board,rowAndCol);
-            }
-            winner = "";
-            blockAmount=rowAndCol*rowAndCol;
-        }
-
-
+      *
+        //blockAmount=checkPlayer(player1,player2,winner,blockAmount,board,rowAndCol);
+        //blockAmount=checkPlayer(player2,player1,winner,blockAmount,board,rowAndCol);
     }
-    private static void checkPlayer(Player player,Player otherPlayer,String winner, int blockAmount,Board board,int rowAndCol)
-    { winner = board.playerMove(player);
-        System.out.println("Winner at player2' round is "+winner);
-        board.printBoard();
-        if (winner.equals(player.getName()))
-        {
-            gameResult(player,otherPlayer, winner, blockAmount);
-            restartGame(player, otherPlayer);
-        }
-        blockAmount--;
-        if(blockAmount==0)
-        {
-            gameResult(player, otherPlayer, winner, blockAmount);
-            restartGame(player, otherPlayer);
-        }
-
-    }
-
-    private static void restartGame(Player player,Player otherPlayer)
+            System.out.println("Game continues?(Y/N)");
+    scanner = new Scanner(System.in);
+            if(scanner.next().toLowerCase().equals("n"))
     {
-        System.out.println("Game continues?(Y/N");
+        System.out.println("Game is over!"+"\n"+
+                player1.getName()+" won "+ player1.getPoint()+" times."+"\n"+
+                player2.getName()+" won "+ player2.getPoint()+" times."+"\n");
+        System.exit(0);
+    }
+    winner ="";
+            board.setBlockAmount(rowAndCol*rowAndCol);
+} */
+
+
+
+    }
+
+    private static boolean play(Player player, Player otherPlayer, Board board)
+    {
+        String winner = board.playerMove(player); //Get chess and if here is a winner, return winner
+        //System.out.println("Winner at player1' round is " + winner);
+        //board.printBoard();
+        if (winner.equals(player.getName())) {
+            //gameResult(player, otherPlayer, winner, board.getBlockAmount());
+            System.out.println("Winner is "+ winner +"\n"+
+                    player.getName()+" wins "+ player.getPoint()+" times."+"\n"+
+                    otherPlayer.getName()+" wins "+ otherPlayer.getPoint()+" times."+"\n");
+
+            return restartGame(player,player,board);
+        }
+        if (board.getBlockAmount() == 0) {
+            //gameResult(player, otherPlayer, winner, board.getBlockAmount());
+            System.out.println("No winner this round"+"\n"+
+                    player.getName()+" wins "+ player.getPoint()+" times."+"\n"+
+                    otherPlayer.getName()+" wins "+ otherPlayer.getPoint()+" times."+"\n");
+
+            return restartGame(player,otherPlayer,board);
+        }
+        return true;
+    }
+
+    private static String checkPlayer(Player player,Player otherPlayer,String winner, int blockAmount,Board board,int rowAndCol)
+    {
+
+            winner = board.playerMove(player);
+            board.printBoard();
+            if (winner.equals(player.getName())) {
+                gameResult(player, otherPlayer, winner, blockAmount);
+                restartGame(player, otherPlayer,board);
+            }
+            blockAmount--;
+            if (blockAmount == 0) {
+                gameResult(player, otherPlayer, winner, blockAmount);
+                restartGame(player, otherPlayer,board);
+            }
+            return winner;
+    }
+
+    private static boolean restartGame(Player player,Player otherPlayer,Board board)
+    {
+        System.out.println("Game continues?(Y/N)");
         Scanner scanner = new Scanner(System.in);
         if(scanner.next().toLowerCase().equals("n"))
         {
             System.out.println("Game is over!"+"\n"+
                     player.getName()+" won "+ player.getPoint()+" times."+"\n"+
                     otherPlayer.getName()+" won "+ otherPlayer.getPoint()+" times."+"\n");
-            System.exit(0);
+            return false;
+        }else
+        {
+            board.newBoard();
+            board.printBoard();
+            return true;
+        }
+
+    }
+
+    private static int checkBlockAmount(String winner,int blockAmount)
+    {
+        if(winner.equals(""))
+            blockAmount--;
+
+        return blockAmount;
+    }
+    private static String checkWinner(String winner,Player player)
+    {
+        if(winner.equals(player.getName()))
+        {
+            return  winner;
+        }else
+        {
+            return "";
         }
     }
+
 
     private static void configurePlayer(Player player){
         player.setName();

@@ -20,6 +20,8 @@ public class Board
         for(int i = 0;i<rowAndCol;i++)
             for(int j = 0; j<rowAndCol;j++)
                 board[i][j]=" ";
+
+        this.blockAmount = rowAndCol*rowAndCol;
     }
 
     public void printBoard()
@@ -30,7 +32,7 @@ public class Board
         System.out.print("    ");
         for(int i=0;i<board.length;i++)
         {
-            System.out.print("  "+(i+1)+"  ");
+            System.out.print(" Y:"+(i+1)+" ");
         }
         System.out.println();
 
@@ -44,7 +46,7 @@ public class Board
         for(int i=0;i<board.length;i++)
         {
 
-            System.out.print("  "+(i+1)+" ");
+            System.out.print("X:"+(i+1)+" ");
             for(int j=0;j<board.length;j++)
             {
                 System.out.print("| "+board[i][j]+"  ");
@@ -89,6 +91,9 @@ public class Board
     {
 
         getChess(p);
+        blockAmount--;
+        printBoard();
+        System.out.println("Block Amount on board"+blockAmount);
         System.out.println("Player's X and Y: "+p.getX()+" "+p.getY());
         if(!checkWinnerHorizontally(p).equals("")) {
             p.setPoint();
@@ -197,8 +202,11 @@ public class Board
         }
     }
 
+    public void setBlockAmount(int blockAmount) {
+        this.blockAmount = blockAmount;
+    }
 
-
-
-
+    public int getBlockAmount() {
+        return blockAmount;
+    }
 }

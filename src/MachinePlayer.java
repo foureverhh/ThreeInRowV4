@@ -45,6 +45,6 @@ public class MachinePlayer extends Player
     public void setCoordinateY()
     {
         Random random = new Random();
-        super.setX(random.nextInt(getRange()));
+        super.setY(random.nextInt(getRange()));
     }
 }
